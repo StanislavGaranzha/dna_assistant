@@ -88,4 +88,3 @@ class PravoGovParser:
         except Exception as exc:
           msg = f'Не получилось создать список, {exc}, {time.ctime()}'
           bot.send_message(message.chat.id, msg)
-          continue
