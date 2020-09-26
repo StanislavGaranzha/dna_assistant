@@ -74,13 +74,7 @@ class PravoGovParser:
           new_urls = self.get_url_docs(self.url)
           diff_urls = new_urls.difference(current_urls)
 
-          if not diff_urls:
-            msg = f'{self.body}: новых документов не было'
-            bot.send_message(
-              message.chat.id,
-              msg
-            )
-          else:
+          if diff_urls:
             time.sleep(2)
             urls_img_and_doc = self.get_urls_img_and_doc(diff_urls)
             for url_img, url_doc in urls_img_and_doc:
