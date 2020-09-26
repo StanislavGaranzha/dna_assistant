@@ -82,8 +82,8 @@ class PravoGovParser:
               bot.send_photo(message.chat.id, url_img)
               time.sleep(2)
               bot.send_message(message.chat.id, url_doc)
-          flag = False
           time.sleep(10)
+          flag = False
 
         except Exception as exc:
           msg = f'Не получилось создать список, {exc}, {time.ctime()}'
