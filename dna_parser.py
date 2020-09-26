@@ -60,7 +60,8 @@ class PravoGovParser:
     while True:
       round += 1
       if not round%24: # тестовое сообщение каждые 4 часа (10 мин * 24)
-        print('Тестовое сообщение - парсер работает в штатном режиме')
+        msg = f'Тест: парсер {self.body} работает в штатном режиме'
+        bot.send_message(message.chat.id, msg)
       try:
         current_urls = self.get_url_docs(self.url)
       except Exception as exc:
