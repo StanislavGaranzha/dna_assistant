@@ -55,7 +55,7 @@ class PravoGovParser:
     '''
     Находить и отправлять через ТГ-бота информацию о новых документах
     на сайте pravo.gov.ru. Частота обновления - 10 мин.
-    Информация включает адрес документа и картинка его первой страницы.
+    Информация включает адрес документа и картинку его первой страницы.
     '''
     round = 0
     print(f'Парсер {self.body} запущен')
@@ -63,7 +63,7 @@ class PravoGovParser:
       try:
         current_urls = self.get_url_docs(self.url)
         round += 1
-        if not round%24: # тестовое сообщение каждые 4 часа (10 мин * 24)
+        if not round % 24: # тестовое сообщение каждые 4 часа (10 мин * 24)
           msg = f'Тест: парсер {self.body} работает в штатном режиме'
           bot.send_message(message.chat.id, msg)
       except Exception as exc:
