@@ -46,7 +46,8 @@ class PravoGovParser:
         img_tag = page_code.select('.documentImage')
         url_img = self.base_url + img_tag[0].attrs['src']
         urls_img_and_doc.add((url_img, url_doc))
-      except:
+      except Exception as exc:
+        print(f'{exc} при запросе адреса {url_doc}', time.ctime())
         continue
     return urls_img_and_doc
 
@@ -57,15 +58,16 @@ class PravoGovParser:
     Информация включает адрес документа и картинка его первой страницы.
     '''
     round = 0
+    print(f'Парсер {self.body} запущен')
     while True:
-      round += 1
-      if not round%24: # тестовое сообщение каждые 4 часа (10 мин * 24)
-        msg = f'Тест: парсер {self.body} работает в штатном режиме'
-        bot.send_message(message.chat.id, msg)
       try:
         current_urls = self.get_url_docs(self.url)
+        round += 1
+        if not round%24: # тестовое сообщение каждые 4 часа (10 мин * 24)
+          msg = f'Тест: парсер {self.body} работает в штатном режиме'
+          bot.send_message(message.chat.id, msg)
       except Exception as exc:
-        msg = f'Не получилось создать список, {exc}, {time.ctime()}'
+        msg = f'Не получилось создать текущий список, {exc}, {time.ctime()}'
         bot.send_message(message.chat.id, msg)
         continue
       time.sleep(600)
@@ -74,18 +76,22 @@ class PravoGovParser:
         try:
           new_urls = self.get_url_docs(self.url)
           diff_urls = new_urls.difference(current_urls)
+        except Exception as exc:
+          msg = f'Не получилось создать список для сравнения, {exc}'
+          bot.send_message(message.chat.id, msg)
+          continue
 
-          if diff_urls:
-            time.sleep(2)
-            urls_img_and_doc = self.get_urls_img_and_doc(diff_urls)
-            for url_img, url_doc in urls_img_and_doc:
+        if diff_urls:
+          time.sleep(2)
+          urls_img_and_doc = self.get_urls_img_and_doc(diff_urls)
+          for url_img, url_doc in urls_img_and_doc:
+            try:
               time.sleep(2)
               bot.send_photo(message.chat.id, url_img)
-              time.sleep(2)
-              bot.send_message(message.chat.id, url_doc)
-          time.sleep(10)
+            except Exception as exc:
+              msg = f'Не получилось передать картинку {url_img}'
+              bot.send_message(message.chat.id, msg)
+            time.sleep(2)
+            bot.send_message(message.chat.id, url_doc)
+          time.sleep(2)
           flag = False
-
-        except Exception as exc:
-          msg = f'Не получилось создать список, {exc}, {time.ctime()}'
-          bot.send_message(message.chat.id, msg)
